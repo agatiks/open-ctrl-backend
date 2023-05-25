@@ -1,10 +1,10 @@
-create table app_user (
+create table if not exists app_user (
     id bigserial primary key,
     user_id text not null unique,
     role text not null
 );
 
-create table user_info (
+create table if not exists user_info (
     id bigserial primary key,
     user_id text not null,
     first_name text,
@@ -15,12 +15,12 @@ create table user_info (
     foreign key(user_id) references app_user(user_id)
 );
 
-create table kno (
+create table if not exists kno (
     id bigserial primary key,
     name text not null
 );
 
-create table measures (
+create table if not exists measures (
     id bigserial primary key,
     name text not null,
     kno_id bigint not null,
@@ -28,7 +28,7 @@ create table measures (
     foreign key(kno_id) references kno(id)
 );
 
-create table appointments (
+create table if not exists appointments (
     id bigserial primary key,
     appointment_time timestamp not null,
     kno_id bigint not null,
