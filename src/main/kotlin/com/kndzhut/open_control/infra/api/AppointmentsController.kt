@@ -8,7 +8,6 @@ import com.kndzhut.open_control.usecase.utils.toResponseEntity
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.aspectj.lang.annotation.After
 import org.springframework.context.annotation.DependsOn
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -22,7 +21,7 @@ import javax.annotation.PostConstruct
     produces = [MediaType.APPLICATION_JSON_VALUE]
 )
 @Tag(name = "Appointments API", description = "API для работы со встречами")
-class AppointmentsController (
+class AppointmentsController(
     private val initAppointmentsDatabaseUseCase: InitAppointmentsDatabaseUseCase,
     private val getFreeAppointmentsUseCase: GetFreeAppointmentsUseCase,
 ) {
@@ -32,7 +31,8 @@ class AppointmentsController (
     }
 
     @Operation(
-        method = "GET", description = "получение списка всех доступных окон, начиная с времени запроса", responses = [
+        method = "GET", description = "получение списка всех доступных окон, начиная с времени запроса",
+        responses = [
             ApiResponse(description = "успешное создание коммуникации", responseCode = "200"),
         ]
     )

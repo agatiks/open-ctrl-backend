@@ -19,10 +19,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.sql.Timestamp
-import java.text.DateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -34,7 +31,7 @@ class GoogleSheetsClient {
         private const val TOKENS_DIRECTORY_PATH = "tokens"
         private val SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY)
         private const val CREDENTIALS_FILE_PATH = "/client_secret.json"
-        private val APPOINTMENTS_PAGES = mapOf<String, Int>(
+        private val APPOINTMENTS_PAGES = mapOf(
             "Главархив" to 8,
             "ГИН" to 19,
             "ДЗН" to 1,
@@ -133,36 +130,21 @@ class GoogleSheetsClient {
         for (page in APPOINTMENTS_PAGES.keys) {
             val range = "$page!A2:H"
             val values = getValues(service, spreadsheetId, range)
-            //print(values)
             var isTimes = false
             val knoId = APPOINTMENTS_PAGES[page] ?: 0
             for (row in values) {
-                if(row.isEmpty()) continue
+                if (row.isEmpty()) continue
                 if (row[0] == "Июнь") {
                     isTimes = true
                     continue
                 }
                 if (!isTimes) continue
-                if (row.size >= 2 && row[0] != "" && row[1] != "") {
-                    appointments.add(
-                            AppointmentStartDto(
-                                timestamp = getDateTime(Month.JUNE, row[0], row[1]),
-                                knoId = knoId
-                            )
-                    )
-                }
-                if (row.size >= 5 && row[3] != "" && row[4] != "") {
+                val dates = row.filter { it != "" }
+                for (pairNum in 0 until dates.size / 3) {
                     appointments.add(
                         AppointmentStartDto(
-                            timestamp = getDateTime(Month.JULY, row[3], row[4]),
-                            knoId = knoId
-                        )
-                    )
-                }
-                if (row.size == 8 && row[6] != "" && row[7] != "") {
-                    appointments.add(
-                        AppointmentStartDto(
-                            timestamp = getDateTime(Month.AUGUST, row[6], row[7]),
+                            id = UUID.randomUUID(),
+                            timestamp = getDateTime(dates[pairNum * 2], dates[pairNum * 2 + 1]),
                             knoId = knoId
                         )
                     )
@@ -176,10 +158,10 @@ class GoogleSheetsClient {
      * day in format: "mm/dd/yyyy"
      * time in format: "hh:mm-hh:mm"
      */
-    private fun getDateTime(month: Month, day: Any, time: Any): Timestamp {
+    private fun getDateTime(day: Any, time: Any): Timestamp {
         val timeString = "${day as String} ${(time as String).substringBefore("-")}"
+        //println(timeString)
         val format = DateTimeFormatter.ofPattern("M/d/yyyy H:mm")
-        //println(LocalDateTime.parse(timeString, format))
         return Timestamp.valueOf(LocalDateTime.parse(timeString, format))
     }
 }
