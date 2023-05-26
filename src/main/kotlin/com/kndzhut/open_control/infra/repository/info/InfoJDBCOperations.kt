@@ -1,8 +1,8 @@
 package com.kndzhut.open_control.infra.repository.info
 
-import com.kndzhut.open_control.domain.Kno
-import com.kndzhut.open_control.domain.Measure
-import com.kndzhut.open_control.domain.MeasureDto
+import com.kndzhut.open_control.domain.*
+import com.kndzhut.open_control.usecase.info.user.UpdateBusinessUserInfoRequest
+import com.kndzhut.open_control.usecase.info.user.UpdateInspectionUserInfoRequest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 
@@ -38,8 +38,67 @@ class InfoJDBCOperations(
         return jdbcTemplate.query(query) { rs, _ ->
             MeasureDto(
                 id = rs.getInt("id"),
-                name = rs.getString("name"))
+                name = rs.getString("name")
+            )
         }
+    }
+
+    fun createUser(userId: String, role: Role) {
+        val query = "insert into app_user values ('$userId', '${role.name}');" +
+                "insert into ${role.name.lowercase()}_user_info (id) values ('$userId')"
+        jdbcTemplate.execute(query)
+    }
+
+    fun updateInspectionUserInfo(request: UpdateInspectionUserInfoRequest) {
+        val query = "update inspection_user_info " +
+                "set kno_id=${request.knoId?.let { "'$it'" }}, email=${request.email?.let { "'$it'" }}, " +
+                "first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surname?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }} " +
+                "where id='${request.userId}'"
+        jdbcTemplate.execute(query)
+    }
+
+    fun updateBusinessUserInfo(request: UpdateBusinessUserInfoRequest) {
+        val query = "update business_user_info " +
+                "first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surName?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }} " +
+                "set inn=${request.inn}, email=${request.email?.let { "'$it'" }}, inn=${request.snils}" +
+                "where id='${request.userId}'"
+        jdbcTemplate.execute(query)
+    }
+
+    fun getUserRole(userId: String): Role {
+        val query = "select role from app_user where id='$userId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            Role.valueOf(rs.getString("role"))
+        }[0]
+    }
+
+    fun getInspectionUserInfo(userId: String): InspectionUser {
+        val query = "select * from inspection_user_info where id='$userId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            InspectionUser(
+                id = rs.getString("id"),
+                firstName = rs.getString("first_name"),
+                surName = rs.getString("surname"),
+                lastName = rs.getString("last_name"),
+                email = rs.getString("email"),
+                knoId = rs.getInt("kno_id")
+            )
+        }[0]
+    }
+
+    fun getBusinessUserInfo(userId: String): BusinessUser {
+        val query = "select * from business_user_info where id='$userId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            BusinessUser(
+                id = rs.getString("id"),
+                firstName = rs.getString("first_name"),
+                surName = rs.getString("surname"),
+                lastName = rs.getString("last_name"),
+                email = rs.getString("email"),
+                inn = rs.getInt("inn"),
+                snils = rs.getInt("snils")
+            )
+        }[0]
     }
 }
 

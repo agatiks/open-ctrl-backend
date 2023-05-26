@@ -10,17 +10,9 @@ create table app_user
     role text not null
 );
 
-create table business_user_info
-(
-    id         text primary key,
-    first_name text,
-    last_name  text,
-    email      text,
-
-    foreign key (id) references app_user (id)
+create table passport (
+    id UUID primary key
 );
-
-
 
 create table address
 (
@@ -42,10 +34,28 @@ create table business
     foreign key (user_id) references app_user (id)
 );
 
-create table inspector_user_info
+create table business_user_info
 (
-    id     text primary key,
-    kno_id bigint not null,
+    id  text primary key,
+    passport_id UUID,
+    first_name text,
+    surname text,
+    last_name  text,
+    email      text,
+    inn bigint,
+    snils bigint,
+
+    foreign key (id) references app_user (id),
+    foreign key (passport_id) references passport (id)
+);
+
+create table inspection_user_info
+(
+    id text primary key,
+    first_name text,
+    surname text,
+    last_name  text,
+    kno_id bigint,
     email  text,
 
     foreign key (id) references app_user (id),
