@@ -1,8 +1,10 @@
 package com.kndzhut.open_control.infra.repository.info
 
 import com.kndzhut.open_control.domain.*
+import com.kndzhut.open_control.usecase.info.business.CreateBusinessRequest
 import com.kndzhut.open_control.usecase.info.user.*
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class InfoRepository (
@@ -27,4 +29,10 @@ class InfoRepository (
 
     fun getBusinessUserInfo(userId: String): BusinessUser =
         infoJDBCOperations.getBusinessUserInfo(userId)
+
+    fun createBusiness(request: CreateBusinessRequest): UUID =
+        infoJDBCOperations.createBusiness(request)
+
+    fun getBusiness(businessId: UUID): Business =
+        infoJDBCOperations.getBusiness(businessId)
 }

@@ -1,10 +1,12 @@
 package com.kndzhut.open_control.infra.repository.info
 
 import com.kndzhut.open_control.domain.*
+import com.kndzhut.open_control.usecase.info.business.CreateBusinessRequest
 import com.kndzhut.open_control.usecase.info.user.UpdateBusinessUserInfoRequest
 import com.kndzhut.open_control.usecase.info.user.UpdateInspectionUserInfoRequest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class InfoJDBCOperations(
@@ -100,5 +102,31 @@ class InfoJDBCOperations(
             )
         }[0]
     }
+
+    fun createBusiness(request: CreateBusinessRequest): UUID {
+        val addressUUID = UUID.randomUUID()
+        val businessUUID = UUID.randomUUID()
+        val query = "insert into address values ('$addressUUID', '${request.address}');" +
+                "insert into business values ('${businessUUID}','${request.userId}', '${request.type}', '${request.kind}', " +
+                "'${request.objectClass}', '${request.activityClass}', '$addressUUID')"
+        jdbcTemplate.execute(query)
+        return businessUUID
+    }
+
+    fun getBusiness(businessId: UUID): Business {
+        val query = "select * from (business join address on business.address_id=address.id) where business.id='$businessId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            Business(
+                id = rs.getObject("id") as UUID,
+                userId = rs.getString("user_id"),
+                type = rs.getString("type"),
+                kind = rs.getString("kind"),
+                objectClass = rs.getString("object_class"),
+                activityClass = rs.getString("activity_class"),
+                address = rs.getString("place")
+            )
+        }[0]
+    }
+
 }
 

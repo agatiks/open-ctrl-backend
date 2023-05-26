@@ -1,5 +1,9 @@
 package com.kndzhut.open_control.infra.api
 
+import com.kndzhut.open_control.usecase.info.business.CreateBusinessRequest
+import com.kndzhut.open_control.usecase.info.business.CreateBusinessUseCase
+import com.kndzhut.open_control.usecase.info.business.GetBusinessRequest
+import com.kndzhut.open_control.usecase.info.business.GetBusinessUseCase
 import com.kndzhut.open_control.usecase.info.kno.GetAllKnoUseCase
 import com.kndzhut.open_control.usecase.info.kno.GetMeasuresByKnoRequest
 import com.kndzhut.open_control.usecase.info.kno.GetMeasuresByKnoUseCase
@@ -12,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.annotation.PostConstruct
 
 @RestController
@@ -31,7 +36,10 @@ class InfoController(
 
     private val getBusinessUserInfoUseCase: GetBusinessUserInfoUseCase,
     private val getInspectionUserInfoUseCase: GetInspectionUserInfoUseCase,
-    private val getUserRoleUseCase: GetUserRoleUseCase
+    private val getUserRoleUseCase: GetUserRoleUseCase,
+
+    private val createBusinessUseCase: CreateBusinessUseCase,
+    private val getBusinessUseCase: GetBusinessUseCase
 ) {
     @PostConstruct
     fun getInfoFromGoogleSheets() {
@@ -104,5 +112,22 @@ class InfoController(
     fun getInspectorUserInfo(@RequestParam userId: String): ResponseEntity<*> {
         val request = GetInspectionUserInfoRequest(userId)
         return getInspectionUserInfoUseCase.execute(request).toResponseEntity()
+    }
+
+    @Operation(
+        method = "POST", description = "добавить информацию о бизнесе"
+    )
+    @PostMapping("/business")
+    fun getInspectorUserInfo(@RequestBody request: CreateBusinessRequest): ResponseEntity<*> {
+        return createBusinessUseCase.execute(request).toResponseEntity()
+    }
+
+    @Operation(
+        method = "GET", description = "посмотреть информацию о бизнесе"
+    )
+    @GetMapping("/business")
+    fun getBusinessInfo(@RequestParam businessId: UUID): ResponseEntity<*> {
+        val request = GetBusinessRequest(businessId)
+        return getBusinessUseCase.execute(request).toResponseEntity()
     }
 }
