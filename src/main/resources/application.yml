@@ -5,6 +5,10 @@ spring:
     url: "jdbc:postgresql://0.0.0.0:5432/postgres"
     username: "postgres"
     password: "password"
+
+
+
+
 #  url: "jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}"
 #  username: ${PGUSER}
 #  password: ${PGPASSWORD}
