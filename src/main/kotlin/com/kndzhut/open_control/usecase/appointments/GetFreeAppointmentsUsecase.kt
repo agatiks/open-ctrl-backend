@@ -1,4 +1,4 @@
-package com.kndzhut.open_control.usecase.appointments.get_free_appointments
+package com.kndzhut.open_control.usecase.appointments
 
 import com.kndzhut.open_control.domain.AppointmentTime
 import com.kndzhut.open_control.infra.repository.appointments.AppointmentsRepository
@@ -17,14 +17,15 @@ class GetFreeAppointmentsUseCase(
             .let { UseCaseResult.success(GetFreeAppointmentsResponse(it)) }
 }
 
-data class GetFreeAppointmentsRequest (
+data class GetFreeAppointmentsRequest(
     val knoId: Int
 ) : Request
 
-class GetFreeAppointmentsResponse (
+class GetFreeAppointmentsResponse(
     val freeWindows: List<AppointmentTime>
 ) : Response
-class GetFreeAppointmentsError (
+
+class GetFreeAppointmentsError(
     val code: Code
 ) : Error {
     enum class Code {

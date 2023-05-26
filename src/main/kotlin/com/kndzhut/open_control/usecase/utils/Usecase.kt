@@ -38,6 +38,7 @@ fun UseCaseResult<*, *>.toResponseEntity(): ResponseEntity<*> = fold(
 
 class EmptyRequest(): Request
 class EmptyError(): Error
+class EmptyResponse(): Response
 
 
 interface Request
