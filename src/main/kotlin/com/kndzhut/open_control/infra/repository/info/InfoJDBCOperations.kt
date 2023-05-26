@@ -59,8 +59,8 @@ class InfoJDBCOperations(
 
     fun updateBusinessUserInfo(request: UpdateBusinessUserInfoRequest) {
         val query = "update business_user_info " +
-                "first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surName?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }} " +
-                "set inn=${request.inn}, email=${request.email?.let { "'$it'" }}, inn=${request.snils}" +
+                "set first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surName?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }}, " +
+                "inn=${request.inn}, email=${request.email?.let { "'$it'" }}, snils=${request.snils} " +
                 "where id='${request.userId}'"
         jdbcTemplate.execute(query)
     }
