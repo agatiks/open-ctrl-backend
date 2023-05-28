@@ -1,7 +1,7 @@
 package com.kndzhut.open_control.infra.repository.info
 
 import com.kndzhut.open_control.domain.*
-import com.kndzhut.open_control.usecase.info.business.CreateBusinessRequest
+import com.kndzhut.open_control.usecase.users.business.CreateBusinessRequest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import java.util.*

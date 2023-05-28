@@ -1,7 +1,5 @@
-package com.kndzhut.open_control.usecase.info.kno
+package com.kndzhut.open_control.usecase.info
 
-import com.kndzhut.open_control.domain.Kno
-import com.kndzhut.open_control.domain.Measure
 import com.kndzhut.open_control.domain.MeasureDto
 import com.kndzhut.open_control.infra.repository.info.InfoRepository
 import com.kndzhut.open_control.usecase.utils.*

@@ -3,7 +3,7 @@ package com.kndzhut.open_control.infra.api.config
 import com.kndzhut.open_control.infra.api.AppointmentsController
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
-import org.springdoc.core.GroupedOpenApi
+import org.springdoc.core.models.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,7 +14,6 @@ class SwaggerConfig {
         private const val CURRENT_API_VERSION = "1"
         private const val SWAGGER_TITLE = "API открытый контроль"
         private const val APPOINTMENTS_API_GROUP_NAME = "appointments"
-        private const val SELECTION_API_GROUP_NAME = "users-selection"
     }
 
     @Bean

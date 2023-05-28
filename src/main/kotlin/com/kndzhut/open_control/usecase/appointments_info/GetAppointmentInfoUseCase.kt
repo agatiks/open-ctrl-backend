@@ -1,6 +1,6 @@
 package com.kndzhut.open_control.usecase.appointments_info
 
-import com.kndzhut.open_control.domain.AppointmentDto
+import com.kndzhut.open_control.domain.Appointment
 import com.kndzhut.open_control.infra.repository.appointments.AppointmentsRepository
 import com.kndzhut.open_control.usecase.utils.*
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class GetAppointmentInfoRequest(
 ) : Request
 
 class GetAppointmentInfoResponse(
-    val appointment: AppointmentDto
+    val appointment: Appointment
 ) : Response
 
 class GetAppointmentInfoError(

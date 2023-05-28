@@ -1,4 +1,4 @@
-package com.kndzhut.open_control.usecase.info.business
+package com.kndzhut.open_control.usecase.users.business
 
 import com.kndzhut.open_control.domain.Business
 import com.kndzhut.open_control.infra.repository.info.InfoRepository

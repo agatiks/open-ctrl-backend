@@ -19,12 +19,29 @@ enum class AppointmentStatus {
     UNSELECTED, SELECTED, AGREED
 }
 
-class AppointmentInfo(
-    val id: UUID,
-    val time: Timestamp,
-    val status: AppointmentStatus,
-    val withWho: String
+open class AppointmentInfo(
+    open val id: UUID,
+    open val time: Timestamp,
+    open val status: AppointmentStatus,
 )
+
+class BusinessAppointmentInfo(
+    override val id: UUID,
+    override val time: Timestamp,
+    override val status: AppointmentStatus,
+    val knoId: Int,
+    val knoName: String,
+    val measureId: Int?,
+    val measureName: String?
+): AppointmentInfo(id, time, status)
+
+class InspectionAppointmentInfo(
+    override val id: UUID,
+    override val time: Timestamp,
+    override val status: AppointmentStatus,
+    val businessUserId: Int,
+    //val businessUserName: Int,
+): AppointmentInfo(id, time, status)
 
 class AppointmentDto(
     val id: UUID,
@@ -42,9 +59,11 @@ class Appointment(
     val id: UUID,
     val time: Timestamp,
     val knoId: Int,
+    val knoName: String,
     val businessId: String?,
     val inspectionId: String?,
     val measureId: Int?,
+    val measureName: String?,
     val description: String?,
     val files: List<MultipartFile>?,
     val status: AppointmentStatus

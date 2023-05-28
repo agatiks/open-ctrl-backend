@@ -32,28 +32,32 @@ class AppointmentJDBCOperations(
     }
 
     fun getUserAppointments(userId: String): List<AppointmentInfo> {
-        val query = "select appointments.id, appointment_time, kno.name, status from " +
-                "(appointments join kno on kno.id=appointments.kno_id) " +
+        val query = "select id, appointment_time, status, kno_id, measure_id from appointments " +
                 "where business_id='$userId' or inspection_id='$userId'"
         return jdbcTemplate.query(query) {rs, _ ->
-            AppointmentInfo(
+            BusinessAppointmentInfo(
                 id = rs.getObject("id") as UUID,
                 time = rs.getTimestamp("appointment_time"),
-                withWho = rs.getString("name"),
+                knoId = rs.getInt("kno_id"),
+                knoName = infoRepository.getKno(rs.getInt("kno_id")),
+                measureId = rs.getInt("measure_id"),
+                measureName = infoRepository.getKno(rs.getInt("measure_id")),
                 status = AppointmentStatus.valueOf(rs.getString("status"))
             )
         }
     }
 
     fun getInspectionAppointments(knoId: Int, userId: String?): List<AppointmentInfo> {
-        val query = "select appointments.id, appointment_time, business_user_info.first_name, business_user_info.last_name, status from " +
+        /*val query = "select appointments.id, appointment_time, business_user_info.first_name, business_user_info.last_name, status from " +
                 "(appointments join business_user_info on business_user_info.id=appointments.business_id) " +
+                "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"*/
+        val query = "select id, appointment_time, business_id, status from appointments" +
                 "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"
         return jdbcTemplate.query(query) {rs, _ ->
-            AppointmentInfo(
+            InspectionAppointmentInfo(
                 id = rs.getObject("id") as UUID,
                 time = rs.getTimestamp("appointment_time"),
-                withWho = "${rs.getString("first_name")} ${rs.getString("last_name")}" ,
+                businessUserId = rs.getInt("business_id"),
                 status = AppointmentStatus.valueOf(rs.getString("status"))
             )
         }
@@ -94,24 +98,7 @@ class AppointmentJDBCOperations(
         jdbcTemplate.execute(query)
     }
 
-    fun getAppointmentInfo(appointmentId: UUID): AppointmentDto {
-        val query = "select * from appointments where id='$appointmentId'"
-        return jdbcTemplate.query(query) { rs, _ ->
-            AppointmentDto(
-                id = rs.getObject("id") as UUID,
-                businessId = rs.getString("business_id"),
-                inspectionId = rs.getString("inspection_id"),
-                time = rs.getTimestamp("appointment_time"),
-                status = AppointmentStatus.valueOf(rs.getString("status")),
-                kno = infoRepository.getKno(rs.getInt("kno_id")),
-                measure = infoRepository.getMeasure(rs.getInt("measure_id")),
-                description = rs.getString("description"),
-                files = null
-            )
-        }[0]
-    }
-
-    fun getAppointmentInfoDirty(appointmentId: UUID): Appointment {
+    fun getAppointmentInfo(appointmentId: UUID): Appointment {
         val query = "select * from appointments where id='$appointmentId'"
         return jdbcTemplate.query(query) { rs, _ ->
             Appointment(
@@ -121,7 +108,9 @@ class AppointmentJDBCOperations(
                 time = rs.getTimestamp("appointment_time"),
                 status = AppointmentStatus.valueOf(rs.getString("status")),
                 knoId = rs.getInt("kno_id"),
+                knoName = infoRepository.getKno(rs.getInt("kno_id")),
                 measureId = rs.getInt("measure_id"),
+                measureName = infoRepository.getKno(rs.getInt("measure_id")),
                 description = rs.getString("description"),
                 files = null
             )
