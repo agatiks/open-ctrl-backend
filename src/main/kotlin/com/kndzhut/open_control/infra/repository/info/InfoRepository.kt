@@ -36,4 +36,7 @@ class InfoRepository(
 
     fun getBusiness(businessId: UUID): Business =
         infoJDBCOperations.getBusiness(businessId)
+
+    fun getKno(knoId: Int): String = infoJDBCOperations.getKNO(knoId)
+    fun getMeasure(measureId: Int): String = infoJDBCOperations.getMeasure(measureId)
 }

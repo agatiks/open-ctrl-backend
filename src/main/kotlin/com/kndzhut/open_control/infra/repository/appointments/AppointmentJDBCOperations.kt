@@ -1,13 +1,15 @@
 package com.kndzhut.open_control.infra.repository.appointments
 
 import com.kndzhut.open_control.domain.*
+import com.kndzhut.open_control.infra.repository.info.InfoRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
 class AppointmentJDBCOperations(
-    val jdbcTemplate: JdbcTemplate
+    val jdbcTemplate: JdbcTemplate,
+    val infoRepository: InfoRepository
 ) {
     fun getFreeWindows(knoId: Int): List<AppointmentTime> {
         val query = "select id, appointment_time from appointments" +
@@ -92,7 +94,24 @@ class AppointmentJDBCOperations(
         jdbcTemplate.execute(query)
     }
 
-    fun getAppointmentInfo(appointmentId: UUID): Appointment {
+    fun getAppointmentInfo(appointmentId: UUID): AppointmentDto {
+        val query = "select * from appointments where id='$appointmentId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            AppointmentDto(
+                id = rs.getObject("id") as UUID,
+                businessId = rs.getString("business_id"),
+                inspectionId = rs.getString("inspection_id"),
+                time = rs.getTimestamp("appointment_time"),
+                status = AppointmentStatus.valueOf(rs.getString("status")),
+                kno = infoRepository.getKno(rs.getInt("kno_id")),
+                measure = infoRepository.getMeasure(rs.getInt("measure_id")),
+                description = rs.getString("description"),
+                files = null
+            )
+        }[0]
+    }
+
+    fun getAppointmentInfoDirty(appointmentId: UUID): Appointment {
         val query = "select * from appointments where id='$appointmentId'"
         return jdbcTemplate.query(query) { rs, _ ->
             Appointment(

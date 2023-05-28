@@ -26,6 +26,18 @@ class AppointmentInfo(
     val withWho: String
 )
 
+class AppointmentDto(
+    val id: UUID,
+    val time: Timestamp,
+    val kno: String,
+    val businessId: String?,
+    val inspectionId: String?,
+    val measure: String?,
+    val description: String?,
+    val files: List<MultipartFile>?,
+    val status: AppointmentStatus
+)
+
 class Appointment(
     val id: UUID,
     val time: Timestamp,

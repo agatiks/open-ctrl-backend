@@ -131,5 +131,17 @@ class InfoJDBCOperations(
         }[0]
     }
 
+    fun getKNO(knoId: Int): String {
+        val query =
+            "select name from kno where id=$knoId"
+        return jdbcTemplate.query(query) { rs, _ -> rs.getString("name") }[0]
+    }
+
+    fun getMeasure(measureId: Int): String {
+        val query =
+            "select name from measures where id=$measureId"
+        return jdbcTemplate.query(query) { rs, _ -> rs.getString("name") }[0]
+    }
+
 }
 

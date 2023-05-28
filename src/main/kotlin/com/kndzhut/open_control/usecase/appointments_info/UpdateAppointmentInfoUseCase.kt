@@ -12,7 +12,7 @@ class UpdateAppointmentInfoUseCase(
     val appointmentsRepository: AppointmentsRepository
 ) : UseCase<UpdateAppointmentInfoRequest, EmptyResponse, UpdateAppointmentInfoError> {
     override fun execute(request: UpdateAppointmentInfoRequest): UseCaseResult<EmptyResponse, UpdateAppointmentInfoError> =
-        appointmentsRepository.getAppointmentInfo(request.appointmentId).updateBy(request)
+        appointmentsRepository.getAppointmentInfoDirty(request.appointmentId).updateBy(request)
             .let {
                 appointmentsRepository.updateAppointmentInfo(it)
                 UseCaseResult.success(EmptyResponse())

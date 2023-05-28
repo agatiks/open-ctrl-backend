@@ -35,8 +35,11 @@ class AppointmentsRepository(
     fun areKnoEqual(userId: String, appointmentId: UUID): Boolean =
         appointmentJDBCOperations.areKnoEqual(userId, appointmentId)
 
-    fun getAppointmentInfo(appointmentId: UUID): Appointment =
+    fun getAppointmentInfo(appointmentId: UUID): AppointmentDto =
         appointmentJDBCOperations.getAppointmentInfo(appointmentId)
+
+    fun getAppointmentInfoDirty(appointmentId: UUID): Appointment =
+        appointmentJDBCOperations.getAppointmentInfoDirty(appointmentId)
 
     fun updateAppointmentInfo(app: AppointmentMutable) =
         appointmentJDBCOperations.updateAppointmentInfo(app)
