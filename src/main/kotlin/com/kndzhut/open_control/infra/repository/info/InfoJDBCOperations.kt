@@ -2,8 +2,6 @@ package com.kndzhut.open_control.infra.repository.info
 
 import com.kndzhut.open_control.domain.*
 import com.kndzhut.open_control.usecase.info.business.CreateBusinessRequest
-import com.kndzhut.open_control.usecase.info.user.UpdateBusinessUserInfoRequest
-import com.kndzhut.open_control.usecase.info.user.UpdateInspectionUserInfoRequest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import java.util.*
@@ -51,19 +49,23 @@ class InfoJDBCOperations(
         jdbcTemplate.execute(query)
     }
 
-    fun updateInspectionUserInfo(request: UpdateInspectionUserInfoRequest) {
-        val query = "update inspection_user_info " +
-                "set kno_id=${request.knoId?.let { "'$it'" }}, email=${request.email?.let { "'$it'" }}, " +
-                "first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surname?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }} " +
-                "where id='${request.userId}'"
+    fun updateInspectionUserInfo(user: InspectionUser) {
+        val query = with(user) {
+            "update inspection_user_info " +
+                    "set kno_id=${knoId?.let { "'$it'" }}, email=${email?.let { "'$it'" }}, " +
+                    "first_name=${firstName?.let { "'$it'" }}, surname=${surName?.let { "'$it'" }}, last_name=${lastName?.let { "'$it'" }} " +
+                    "where id='${id}'"
+        }
         jdbcTemplate.execute(query)
     }
 
-    fun updateBusinessUserInfo(request: UpdateBusinessUserInfoRequest) {
-        val query = "update business_user_info " +
-                "set first_name=${request.firstName?.let { "'$it'" }}, surname=${request.surName?.let { "'$it'" }}, last_name=${request.lastName?.let { "'$it'" }}, " +
-                "inn=${request.inn}, email=${request.email?.let { "'$it'" }}, snils=${request.snils} " +
-                "where id='${request.userId}'"
+    fun updateBusinessUserInfo(user: BusinessUser) {
+        val query = with(user) {
+            "update business_user_info " +
+                    "set first_name=${firstName?.let { "'$it'" }}, surname=${surName?.let { "'$it'" }}, last_name=${lastName?.let { "'$it'" }}, " +
+                    "inn=${inn}, email=${email?.let { "'$it'" }}, snils=${snils} " +
+                    "where id='${id}'"
+        }
         jdbcTemplate.execute(query)
     }
 
@@ -114,7 +116,8 @@ class InfoJDBCOperations(
     }
 
     fun getBusiness(businessId: UUID): Business {
-        val query = "select * from (business join address on business.address_id=address.id) where business.id='$businessId'"
+        val query =
+            "select * from (business join address on business.address_id=address.id) where business.id='$businessId'"
         return jdbcTemplate.query(query) { rs, _ ->
             Business(
                 id = rs.getObject("id") as UUID,

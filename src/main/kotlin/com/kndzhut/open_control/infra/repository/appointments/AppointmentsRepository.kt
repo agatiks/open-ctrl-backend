@@ -1,8 +1,6 @@
 package com.kndzhut.open_control.infra.repository.appointments
 
-import com.kndzhut.open_control.domain.AppointmentInfo
-import com.kndzhut.open_control.domain.AppointmentStartDto
-import com.kndzhut.open_control.domain.AppointmentTime
+import com.kndzhut.open_control.domain.*
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -19,6 +17,9 @@ class AppointmentsRepository(
     fun getUserAppointments(userId: String): List<AppointmentInfo> =
         appointmentJDBCOperations.getUserAppointments(userId)
 
+    fun getInspectionAppointments(knoId: Int, inspectorId: String?): List<AppointmentInfo> =
+        appointmentJDBCOperations.getInspectionAppointments(knoId, inspectorId)
+
     fun selectAppointment(userId: String, appointmentId: UUID, measureId: Int) =
         appointmentJDBCOperations.selectAppointment(userId, appointmentId, measureId)
 
@@ -33,4 +34,10 @@ class AppointmentsRepository(
 
     fun areKnoEqual(userId: String, appointmentId: UUID): Boolean =
         appointmentJDBCOperations.areKnoEqual(userId, appointmentId)
+
+    fun getAppointmentInfo(appointmentId: UUID): Appointment =
+        appointmentJDBCOperations.getAppointmentInfo(appointmentId)
+
+    fun updateAppointmentInfo(app: AppointmentMutable) =
+        appointmentJDBCOperations.updateAppointmentInfo(app)
 }

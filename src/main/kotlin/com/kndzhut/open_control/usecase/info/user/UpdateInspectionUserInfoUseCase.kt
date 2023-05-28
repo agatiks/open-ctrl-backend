@@ -1,5 +1,6 @@
 package com.kndzhut.open_control.usecase.info.user
 
+import com.kndzhut.open_control.domain.InspectionUser
 import com.kndzhut.open_control.infra.repository.info.InfoRepository
 import com.kndzhut.open_control.usecase.utils.*
 import org.springframework.stereotype.Component
@@ -10,7 +11,21 @@ class UpdateInspectionUserInfoUseCase(
     val infoRepository: InfoRepository
 ) : UseCase<UpdateInspectionUserInfoRequest, EmptyResponse, UpdateInspectionUserInfoError> {
     override fun execute(request: UpdateInspectionUserInfoRequest): UseCaseResult<EmptyResponse, UpdateInspectionUserInfoError> =
-        infoRepository.updateInspectionUserInfo(request).let { UseCaseResult.success(EmptyResponse()) }
+        infoRepository.getInspectionUserInfo(request.userId).updateBy(request)
+            .let {
+                infoRepository.updateInspectionUserInfo(it)
+                UseCaseResult.success(EmptyResponse())
+            }
+
+    private fun InspectionUser.updateBy(request: UpdateInspectionUserInfoRequest) =
+        InspectionUser(
+            id = id,
+            email = request.email ?: email,
+            firstName = request.firstName ?: firstName,
+            lastName = request.lastName ?: lastName,
+            surName = request.surName ?: surName,
+            knoId = request.knoId ?: knoId
+        )
 }
 
 class UpdateInspectionUserInfoRequest(
@@ -19,7 +34,7 @@ class UpdateInspectionUserInfoRequest(
     val email: String?,
     val firstName: String?,
     val lastName: String?,
-    val surname: String?,
+    val surName: String?,
 ) : Request
 
 class UpdateInspectionUserInfoError(

@@ -1,9 +1,6 @@
 package com.kndzhut.open_control.infra.repository.appointments
 
-import com.kndzhut.open_control.domain.AppointmentInfo
-import com.kndzhut.open_control.domain.AppointmentStartDto
-import com.kndzhut.open_control.domain.AppointmentStatus
-import com.kndzhut.open_control.domain.AppointmentTime
+import com.kndzhut.open_control.domain.*
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -40,7 +37,21 @@ class AppointmentJDBCOperations(
             AppointmentInfo(
                 id = rs.getObject("id") as UUID,
                 time = rs.getTimestamp("appointment_time"),
-                kno = rs.getString("name"),
+                withWho = rs.getString("name"),
+                status = AppointmentStatus.valueOf(rs.getString("status"))
+            )
+        }
+    }
+
+    fun getInspectionAppointments(knoId: Int, userId: String?): List<AppointmentInfo> {
+        val query = "select appointments.id, appointment_time, business_user_info.first_name, business_user_info.last_name, status from " +
+                "(appointments join business_user_info on business_user_info.id=appointments.business_id) " +
+                "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"
+        return jdbcTemplate.query(query) {rs, _ ->
+            AppointmentInfo(
+                id = rs.getObject("id") as UUID,
+                time = rs.getTimestamp("appointment_time"),
+                withWho = "${rs.getString("first_name")} ${rs.getString("last_name")}" ,
                 status = AppointmentStatus.valueOf(rs.getString("status"))
             )
         }
@@ -78,6 +89,30 @@ class AppointmentJDBCOperations(
         val query = "update appointments " +
                 "set inspection_id=null, business_id=null, measure_id=null, status='UNSELECTED' " +
                 "where id='$appointmentId'"
+        jdbcTemplate.execute(query)
+    }
+
+    fun getAppointmentInfo(appointmentId: UUID): Appointment {
+        val query = "select * from appointments where id='$appointmentId'"
+        return jdbcTemplate.query(query) { rs, _ ->
+            Appointment(
+                id = rs.getObject("id") as UUID,
+                businessId = rs.getString("business_id"),
+                inspectionId = rs.getString("inspection_id"),
+                time = rs.getTimestamp("appointment_time"),
+                status = AppointmentStatus.valueOf(rs.getString("status")),
+                knoId = rs.getInt("kno_id"),
+                measureId = rs.getInt("measure_id"),
+                description = rs.getString("description"),
+                files = null
+            )
+        }[0]
+    }
+
+    fun updateAppointmentInfo(app: AppointmentMutable) {
+        val query = with(app) {"update appointments " +
+                "set measure_id='$measureId', description='$description' " +
+                "where id='$id'"}
         jdbcTemplate.execute(query)
     }
 

@@ -2,6 +2,10 @@ package com.kndzhut.open_control.infra.api
 
 
 import com.kndzhut.open_control.usecase.appointments.*
+import com.kndzhut.open_control.usecase.appointments_info.GetAppointmentInfoRequest
+import com.kndzhut.open_control.usecase.appointments_info.GetAppointmentInfoUseCase
+import com.kndzhut.open_control.usecase.appointments_info.UpdateAppointmentInfoRequest
+import com.kndzhut.open_control.usecase.appointments_info.UpdateAppointmentInfoUseCase
 import com.kndzhut.open_control.usecase.init_database.InitAppointmentsDatabaseUseCase
 import com.kndzhut.open_control.usecase.utils.toResponseEntity
 import io.swagger.v3.oas.annotations.Operation
@@ -26,7 +30,10 @@ class AppointmentsController(
     private val getUserAppointmentsUseCase: GetUserAppointmentsUseCase,
     private val selectAppointmentUseCase: SelectAppointmentUseCase,
     private val approveAppointmentUseCase: ApproveAppointmentUseCase,
-    private val cancelAppointmentUseCase: CancelAppointmentUseCase
+    private val cancelAppointmentUseCase: CancelAppointmentUseCase,
+    private val getInspectionAppointmentsUseCase: GetInspectionAppointmentsUseCase,
+    private val getAppointmentInfoUseCase: GetAppointmentInfoUseCase,
+    private val updateAppointmentInfoUseCase: UpdateAppointmentInfoUseCase
 ) {
     @PostConstruct
     fun getAppointmentsFromGoogleSheets() {
@@ -47,14 +54,27 @@ class AppointmentsController(
 
     @Operation(
         method = "GET",
-        description = "получение списка всех записей пользователя"
+        description = "получение списка всех записей бизнес-пользователя"
     )
-    @GetMapping()
+    @GetMapping("/business")
     fun getUserAppointments(
         @RequestParam userId: String
     ): ResponseEntity<*> {
         val request = GetUserAppointmentsRequest(userId)
         return getUserAppointmentsUseCase.execute(request).toResponseEntity()
+    }
+
+    @Operation(
+        method = "GET",
+        description = "получение списка всех записей инспекции"
+    )
+    @GetMapping("/inspection")
+    fun getInspectionAppointments(
+        @RequestParam knoId: Int,
+        @RequestParam inspectorId: String
+    ): ResponseEntity<*> {
+        val request = GetInspectionAppointmentsRequest(knoId, inspectorId)
+        return getInspectionAppointmentsUseCase.execute(request).toResponseEntity()
     }
 
     @Operation(
@@ -88,4 +108,36 @@ class AppointmentsController(
         @RequestBody request: CancelAppointmentRequest
     ): ResponseEntity<*> =
         cancelAppointmentUseCase.execute(request).toResponseEntity()
+
+    @Operation(
+        method = "GET",
+        description = "получение информации о записи"
+    )
+    @GetMapping()
+    fun getAppointmentInfo(
+        @RequestParam appointmentId: UUID
+    ): ResponseEntity<*> {
+        val request = GetAppointmentInfoRequest(appointmentId)
+        return getAppointmentInfoUseCase.execute(request).toResponseEntity()
+    }
+
+    @Operation(
+        method = "PUT",
+        description = "обновление информации о записи"
+    )
+    @PutMapping()
+    fun updateAppointmentInfo(
+        @RequestBody request: UpdateAppointmentInfoRequest
+    ): ResponseEntity<*> =
+        updateAppointmentInfoUseCase.execute(request).toResponseEntity()
+
+    /*@Operation(
+        method = "POST",
+        description = "загрузка файла"
+    )
+    @PostMapping("/file/upload")
+    fun uploadFile(
+        @RequestParam file: MultipartFile
+    ): ResponseEntity<*> =
+        uploadFileUseCase.execute(request).toResponseEntity()*/
 }
