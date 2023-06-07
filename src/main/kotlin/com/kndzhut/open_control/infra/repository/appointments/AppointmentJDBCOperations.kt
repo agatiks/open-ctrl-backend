@@ -51,16 +51,17 @@ class AppointmentJDBCOperations(
         /*val query = "select appointments.id, appointment_time, business_user_info.first_name, business_user_info.last_name, status from " +
                 "(appointments join business_user_info on business_user_info.id=appointments.business_id) " +
                 "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"*/
-        val query = "select id, appointment_time, business_id, status from appointments" +
-                "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"
-        return jdbcTemplate.query(query) {rs, _ ->
+        val query = "select id, appointment_time, business_id, status from appointments " +
+                "where kno_id=$knoId and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"
+        val apps = jdbcTemplate.query(query) {rs, _ ->
             InspectionAppointmentInfo(
                 id = rs.getObject("id") as UUID,
                 time = rs.getTimestamp("appointment_time"),
-                businessUserId = rs.getInt("business_id"),
+                businessUserId = rs.getString("business_id"),
                 status = AppointmentStatus.valueOf(rs.getString("status"))
             )
         }
+        return apps
     }
 
     fun isNotSelected(appointmentId: UUID): Boolean {

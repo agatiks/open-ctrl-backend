@@ -39,7 +39,7 @@ class InspectionAppointmentInfo(
     override val id: UUID,
     override val time: Timestamp,
     override val status: AppointmentStatus,
-    val businessUserId: Int,
+    val businessUserId: String,
     //val businessUserName: Int,
 ): AppointmentInfo(id, time, status)
 
