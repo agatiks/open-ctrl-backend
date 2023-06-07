@@ -77,7 +77,7 @@ class AppointmentJDBCOperations(
     }
 
     fun areKnoEqual(userId: String, appointmentId: UUID): Boolean {
-        val userQuery = "select kno_id from inspector_user_info where id='$userId'"
+        val userQuery = "select kno_id from inspection_user_info where id='$userId'"
         val appointmentQuery = "select kno_id from appointments where id='$appointmentId'"
         val userKno = jdbcTemplate.query(userQuery) {rs, _ -> rs.getInt("kno_id") }[0]
         val appointmentKno = jdbcTemplate.query(appointmentQuery) {rs, _ -> rs.getInt("kno_id") }[0]
