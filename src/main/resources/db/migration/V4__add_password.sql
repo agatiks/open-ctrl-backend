@@ -1,4 +1,4 @@
-alter table app_user add column login text not null,
+alter table app_user add column login text,
     add column password text,
     add column lastTimeLoggedIn timestamp;
 
