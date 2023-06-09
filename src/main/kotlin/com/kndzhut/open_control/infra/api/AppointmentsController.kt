@@ -64,10 +64,9 @@ class AppointmentsController(
     )
     @GetMapping("/inspection-user/appointments")
     fun getInspectionAppointments(
-        @RequestParam knoId: Int,
         @RequestParam inspectorId: String
     ): ResponseEntity<*> {
-        val request = GetInspectionAppointmentsRequest(knoId, inspectorId)
+        val request = GetInspectionAppointmentsRequest(inspectorId)
         return getInspectionAppointmentsUseCase.execute(request).toResponseEntity()
     }
 

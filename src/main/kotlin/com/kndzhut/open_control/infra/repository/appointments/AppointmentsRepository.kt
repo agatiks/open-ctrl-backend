@@ -17,8 +17,8 @@ class AppointmentsRepository(
     fun getUserAppointments(userId: String): List<AppointmentInfo> =
         appointmentJDBCOperations.getUserAppointments(userId)
 
-    fun getInspectionAppointments(knoId: Int, inspectorId: String?): List<AppointmentInfo> =
-        appointmentJDBCOperations.getInspectionAppointments(knoId, inspectorId)
+    fun getInspectionAppointments(inspectorId: String?): List<AppointmentInfo> =
+        appointmentJDBCOperations.getInspectionAppointments(inspectorId)
 
     fun selectAppointment(userId: String, appointmentId: UUID, measureId: Int) =
         appointmentJDBCOperations.selectAppointment(userId, appointmentId, measureId)

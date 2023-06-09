@@ -143,5 +143,19 @@ class InfoJDBCOperations(
         return jdbcTemplate.query(query) { rs, _ -> rs.getString("name") }[0]
     }
 
+    fun registryUser(login: String, role: Role, password: String): String {
+        val id = UUID.randomUUID()
+        val query = "insert into app_user values ('$id', '${role.name}', '$login', '$password');" +
+                "insert into ${role.name.lowercase()}_user_info (id) values ('$id')"
+        jdbcTemplate.execute(query)
+        return id.toString()
+    }
+
+    fun loginUser(login: String, password: String, role: Role?): String{
+        val query =
+            "select id from app_user where login='$login' and password='$password' and role='${role?.name}'"
+        return jdbcTemplate.query(query) { rs, _ -> rs.getString("id") }.firstOrNull() ?: throw IllegalArgumentException("Authorizaton failed")
+    }
+
 }
 

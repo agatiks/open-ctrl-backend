@@ -4,6 +4,7 @@ import com.kndzhut.open_control.domain.*
 import com.kndzhut.open_control.infra.repository.info.InfoRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
+import java.lang.IllegalStateException
 import java.util.UUID
 
 @Component
@@ -47,12 +48,13 @@ class AppointmentJDBCOperations(
         }
     }
 
-    fun getInspectionAppointments(knoId: Int, userId: String?): List<AppointmentInfo> {
-        /*val query = "select appointments.id, appointment_time, business_user_info.first_name, business_user_info.last_name, status from " +
-                "(appointments join business_user_info on business_user_info.id=appointments.business_id) " +
-                "where kno_id='$knoId' and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"*/
+    fun getInspectionAppointments(userId: String?): List<AppointmentInfo> {
+        val inspectionQuery = "select kno_id from inspection_user_info where id='$userId'"
+        val knoId = jdbcTemplate.query(inspectionQuery) {rs, _ -> rs.getInt("kno_id")}.firstOrNull()
+            ?: throw IllegalStateException("No such user")
         val query = "select id, appointment_time, business_id, status from appointments " +
                 "where kno_id=$knoId and (status='SELECTED' or (status='AGREED' and inspection_id='$userId'))"
+
         val apps = jdbcTemplate.query(query) {rs, _ ->
             InspectionAppointmentInfo(
                 id = rs.getObject("id") as UUID,

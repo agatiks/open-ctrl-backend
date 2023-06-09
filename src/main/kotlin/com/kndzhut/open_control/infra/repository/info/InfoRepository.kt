@@ -39,4 +39,10 @@ class InfoRepository(
 
     fun getKno(knoId: Int): String = infoJDBCOperations.getKNO(knoId)
     fun getMeasure(measureId: Int): String = infoJDBCOperations.getMeasure(measureId)
+
+    fun registryUser(login: String, role: Role, password: String): String =
+        infoJDBCOperations.registryUser(login, role, password)
+
+    fun loginUser(login: String, password: String, role: Role?): String =
+        infoJDBCOperations.loginUser(login, password, role)
 }

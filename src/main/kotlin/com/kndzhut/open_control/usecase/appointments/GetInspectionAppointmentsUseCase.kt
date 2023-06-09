@@ -17,12 +17,11 @@ class GetInspectionAppointmentsUseCase(
             GetInspectionAppointmentsResponse,
             GetInspectionAppointmentsError> {
     override fun execute(request: GetInspectionAppointmentsRequest): UseCaseResult<GetInspectionAppointmentsResponse, GetInspectionAppointmentsError> =
-        appointmentsRepository.getInspectionAppointments(request.knoId, request.inspectorId)
+        appointmentsRepository.getInspectionAppointments(request.inspectorId)
             .let { UseCaseResult.success(GetInspectionAppointmentsResponse(it)) }
 }
 
 data class GetInspectionAppointmentsRequest(
-    val knoId: Int,
     val inspectorId: String?
 ) : Request
 
