@@ -53,7 +53,8 @@ class InfoJDBCOperations(
         val query = with(user) {
             "update inspection_user_info " +
                     "set kno_id=${knoId?.let { "'$it'" }}, email=${email?.let { "'$it'" }}, " +
-                    "first_name=${firstName?.let { "'$it'" }}, surname=${surName?.let { "'$it'" }}, last_name=${lastName?.let { "'$it'" }} " +
+                    "first_name=${firstName?.let { "'$it'" }}, surname=${surName?.let { "'$it'" }}, last_name=${lastName?.let { "'$it'" }}, " +
+                    "phone=${mobilePhone?.let { "'$it'" }} " +
                     "where id='${id}'"
         }
         jdbcTemplate.execute(query)
@@ -63,7 +64,8 @@ class InfoJDBCOperations(
         val query = with(user) {
             "update business_user_info " +
                     "set first_name=${firstName?.let { "'$it'" }}, surname=${surName?.let { "'$it'" }}, last_name=${lastName?.let { "'$it'" }}, " +
-                    "inn=${inn}, email=${email?.let { "'$it'" }}, snils=${snils} " +
+                    "inn=${inn}, email=${email?.let { "'$it'" }}, snils=${snils}, " +
+                    "phone=${mobilePhone?.let { "'$it'" }} " +
                     "where id='${id}'"
         }
         jdbcTemplate.execute(query)
@@ -85,7 +87,8 @@ class InfoJDBCOperations(
                 surName = rs.getString("surname"),
                 lastName = rs.getString("last_name"),
                 email = rs.getString("email"),
-                knoId = rs.getInt("kno_id")
+                knoId = rs.getInt("kno_id"),
+                mobilePhone = rs.getString("phone")
             )
         }[0]
     }
@@ -100,7 +103,8 @@ class InfoJDBCOperations(
                 lastName = rs.getString("last_name"),
                 email = rs.getString("email"),
                 inn = rs.getInt("inn"),
-                snils = rs.getInt("snils")
+                snils = rs.getInt("snils"),
+                mobilePhone = rs.getString("phone")
             )
         }[0]
     }

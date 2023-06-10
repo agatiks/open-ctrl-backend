@@ -26,6 +26,7 @@ class UpdateBusinessUserInfoUseCase(
         BusinessUser(
             id = id,
             email = request.email ?: email,
+            mobilePhone = request.mobilePhone ?: mobilePhone,
             firstName = request.firstName ?: firstName,
             lastName = request.lastName ?: lastName,
             surName = request.surName ?: surName,
@@ -38,6 +39,7 @@ class UpdateBusinessUserInfoUseCase(
 class UpdateBusinessUserInfoRequest(
     val userId: String,
     val email: String?,
+    val mobilePhone: String?,
     val firstName: String?,
     val lastName: String?,
     val surName: String?,

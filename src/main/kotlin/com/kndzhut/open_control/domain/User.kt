@@ -2,6 +2,7 @@ package com.kndzhut.open_control.domain
 
 class BusinessUser(
     val id: String,
+    val mobilePhone: String?,
     val email: String?,
     val firstName: String?,
     val lastName: String?,
@@ -13,6 +14,7 @@ class BusinessUser(
 class InspectionUser(
     val id: String,
     val email: String?,
+    val mobilePhone: String?,
     val firstName: String?,
     val lastName: String?,
     val surName: String?,
